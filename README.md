@@ -1,4 +1,4 @@
-# circuit-web
+# network-tsp
 Experimental traveling salesman problem solver on a network (from your pals at Arogi).
 
 
