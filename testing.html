@@ -27,11 +27,25 @@
 <body>
   <div id="map"></div>
 
+  <div id="arogi-menu-main">
+
+    <div id="arogi-top-zone">Arogi Network TSP</div>
+    <div id="arogi-menu-upper">
+      <span id="solution-display">Response</span>
+    </div>
+
+  </div>
+
+
+
   <script>
+
+  // http://localhost:8002/optimized_route?json={%22locations%22:[{%22lat%22:37.58718357318207,%22lon%22:-122.02160596847534,%22type%22:%22break%22},{%22lat%22:36.98217918617181,%22lon%22:-122.02436327934264,%22type%22:%22break%22},{%22lat%22:37.80246216815296,%22lon%22:-122.46836811304091,%22type%22:%22break%22}],%22costing%22:%22auto%22}
+
 
   var map = L.map('map');
   var layer = Tangram.leafletLayer({
-    scene: 'style.yaml',
+    scene: 'grayprint.yaml',
     attribution: '<a href="arogi.com">Arogi</a> | &copy; <a href="http://osm.org">OpenSteetMap</a> | <a href="https://mapzen.com/tangram" target="_blank">Mapzen</a>'
   });
   layer.addTo(map);
