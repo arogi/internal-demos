@@ -91,10 +91,13 @@ def pyCurl(input): #Define function to send request
     global path_length
 
     #Put your valhalla url here
-    url = 'http://localhost:8002/route'
-    ## THE ABOVE IS A KLUDGE, WE SHOULD BE LINKING CONTAINERS INSTEAD.
-    ## THIS SOLUTION WILL ONLY WORK ON MAC & WINDOWS, NOT LINUX
-    ## THE BELOW CODE DOES NOT WORK IN DOCKER
+    url = 'http://valhalla:8002/route'
+    # The above line is designed with the idea that Valhalla routing engine (from Mapzen)
+    # will be running a linked container with the name of valhalla
+    # an example docker link might look like this:
+    # docker run -d --name valhalla arogi/arogi-valhalla
+    # docker run -d -p 80:80 --name web --link valhalla:valhalla arogi/network-tsp
+
     # if platform.system() == 'Darwin' or platform.system() == 'Windows':
     #     url = 'http://192.168.99.100:8002/route'
     # else:

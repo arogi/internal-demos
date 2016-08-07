@@ -29,6 +29,8 @@ RUN wget https://github.com/google/or-tools/releases/download/v4.2/or-tools.pyth
   chown -R root:www-data * && \
   chmod -R 755 *
 
+run pip install requests
+
 # This section sets up GDAL/OGR and PROJ
 RUN wget http://download.osgeo.org/gdal/2.1.1/gdal-2.1.1.tar.gz && \
   wget http://download.osgeo.org/proj/proj-4.9.2.tar.gz && \
