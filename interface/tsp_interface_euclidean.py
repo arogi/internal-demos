@@ -101,7 +101,7 @@ def SolveModel():
           print('No solution found.')
   else:
       print('Specify an instance greater than 0.')
-  return assignment.ObjectiveValue()
+  return assignment.ObjectiveValue()/1000.0
 
 #
 # Read a problem instance from a file
