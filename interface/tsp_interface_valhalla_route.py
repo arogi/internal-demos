@@ -53,14 +53,62 @@ def RunTSP():
 def PreComputeDistances():
     #declare a couple variables
     global d
-    global xyPointArray
+    #global xyPointArray
     # Get the Distance Coordinates in CONUS EqD Projection
-    xyPointArray = GISOps.GetCONUSeqDprojCoords(js)
-    d = cdist(xyPointArray, xyPointArray,'euclidean')
-    return 1
+    #xyPointArray = GISOps.GetCONUSeqDprojCoords(js)
+    #d = cdist(xyPointArray, xyPointArray,'euclidean')
+
+    # read in the coordinates and get their distances to each other
+    numFeatures = len(js['features'])
+    xyPointArray = [[None for k in range(2)] for j in range(numFeatures)]
+    d = [[None for i in range(numFeatures)] for j in range(numFeatures)]
+    i = 0;
+    for line in js['features']:
+        Lon = line['geometry']['coordinates'][0]
+        Lat = line['geometry']['coordinates'][1]
+
+        xyPointArray[i][0] = Lon
+        xyPointArray[i][1] = Lat
+        i += 1
+
+    #print js
+
+    for i in range(numFeatures):
+        longi = xyPointArray[i][0]
+        lati = xyPointArray[i][1]
+        for j in range(numFeatures):
+            longj = xyPointArray[j][0]
+            latj = xyPointArray[j][1]
+            text = postDataJSON(lati,longi,latj,longj)
+            #print pyCurl(json.dumps(text))
+            # Get the distance as a function of the network using Valhalla
+            d[i][j] = pyCurl(json.dumps(text))
+    #print d
+
+def pyCurl(input): #Define function to send request
+    global r #define the request object as r
+    global path_length
+    #Put your valhalla url here
+    url = 'http://192.168.99.100:8002/route'
+    #Define your headers here: in this case we are using json data
+    headers = {'content-type': 'application/json'}
+    #define r as equal to the POST request
+    #print input
+    r = requests.post(url, data = input, headers = headers)
+    #print r.text
+    #capture server response
+    response = r.json()
+    path_length = response['trip']['legs'][0]['summary']['length']
+    coords = response['trip']['legs'][0]['shape']
+    #print path_length
+    return path_length
+
+def postDataJSON(lati,longi,latj,longj):
+    text = {"locations": [{"lat": lati,"lon": longi}, {"lat": latj,"lon": longj}],"costing": "auto","directions_options": {"units": "kilometers"}}
+    return text
 
 def Distance(i,j):
-    return d[i,j]
+    return d[i][j]
 
 def SolveModel():
   """Solve the problem and print the solution."""
