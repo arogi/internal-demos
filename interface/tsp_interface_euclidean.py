@@ -127,9 +127,6 @@ def read_problem(file, readType):
 
 
 ### This function will return a geojson formatted string to send back to the web
-### Since it is based on the p-Median/MCLP data files we can use some of those
-### atributes to send back. In this case facilityLocated represents the 'from
-### node' and assignedTo represents the 'to node' for the TSP.
 def generateGEOJSON(objective):
     for i in range(numFeatures):
         node = routeCoord[i][0]
