@@ -28,8 +28,6 @@ import json
 import GISOps
 import numpy as np
 import requests
-import platform
-from scipy.spatial.distance import cdist
 from ortools.constraint_solver import pywrapcp
 from ortools.constraint_solver import routing_enums_pb2
 import warnings
@@ -54,71 +52,58 @@ def RunTSP():
 def PreComputeDistances():
     #declare a couple variables
     global d
-    #global xyPointArray
-    # Get the Distance Coordinates in CONUS EqD Projection
-    #xyPointArray = GISOps.GetCONUSeqDprojCoords(js)
-    #d = cdist(xyPointArray, xyPointArray,'euclidean')
+    global xyPointArray
 
-    # read in the coordinates and get their distances to each other
-    numFeatures = len(js['features'])
     xyPointArray = [[None for k in range(2)] for j in range(numFeatures)]
     d = [[None for i in range(numFeatures)] for j in range(numFeatures)]
-    i = 0;
-    for line in js['features']:
-        Lon = line['geometry']['coordinates'][0]
-        Lat = line['geometry']['coordinates'][1]
 
-        xyPointArray[i][0] = Lon
-        xyPointArray[i][1] = Lat
-        i += 1
+    # Get the distance as a function of the network using Valhalla
+    response = pyCurl(xyPointArray)
 
-    #print js
+    for k in range(numFeatures):
+        for l in range(numFeatures):
+            d[k][l] = response['many_to_many'][k][l]['distance']*10000
 
-    for i in range(numFeatures):
-        longi = xyPointArray[i][0]
-        lati = xyPointArray[i][1]
-        for j in range(numFeatures):
-            longj = xyPointArray[j][0]
-            latj = xyPointArray[j][1]
-            text = postDataJSON(lati,longi,latj,longj)
-            #print pyCurl(json.dumps(text))
-            # Get the distance as a function of the network using Valhalla
-            d[i][j] = pyCurl(json.dumps(text))
-    #print d
 
 def pyCurl(input): #Define function to send request
+    global lat
+    global lon
     global r #define the request object as r
     global path_length
 
     #Put your valhalla url here
-    url = 'http://valhalla:8002/route'
-    # The above line is designed with the idea that Valhalla routing engine (from Mapzen)
-    # will be running a linked container with the name of valhalla
-    # an example docker link might look like this:
-    # docker run -d --name valhalla arogi/arogi-valhalla
-    # docker run -d -p 80:80 --name web --link valhalla:valhalla arogi/network-tsp
-
-    # if platform.system() == 'Darwin' or platform.system() == 'Windows':
-    #     url = 'http://192.168.99.100:8002/route'
-    # else:
-    #     url = 'http://localhost:8002/route'
-
+    url = 'http://valhalla:8002/many_to_many'
     #Define your headers here: in this case we are using json data
     headers = {'content-type': 'application/json'}
+
+    # read in the coordinates and get their distances to each other
+    numFeatures = len(js['features'])
+    i = 0;
+    for line in js['features']:
+        #Longitude
+        xyPointArray[i][0] = line['geometry']['coordinates'][0]
+        #Lattitude
+        xyPointArray[i][1] = line['geometry']['coordinates'][1]
+        i += 1
+
+    postJS = json.loads('{"costing": "auto", "units": "km"}')
+    coords = []
+    for i in range(numFeatures):
+        lon = xyPointArray[i][0]
+        lat = xyPointArray[i][1]
+        coords.append(createDict('lat', 'lon'))
+
+    postJS['locations'] = coords
+
     #define r as equal to the POST request
-    #print input
-    r = requests.post(url, data = input, headers = headers)
-    #print r.text
+    r = requests.post(url, json = postJS, headers = headers)
+
     #capture server response
     response = r.json()
-    path_length = response['trip']['legs'][0]['summary']['length']
-    coords = response['trip']['legs'][0]['shape']
-    #print path_length
-    return path_length
+    return response
 
-def postDataJSON(lati,longi,latj,longj):
-    text = {"locations": [{"lat": lati,"lon": longi}, {"lat": latj,"lon": longj}],"costing": "auto","directions_options": {"units": "kilometers"}}
-    return text
+def createDict(*args):
+    return dict(((k, eval(k)) for k in args))
 
 def Distance(i,j):
     return d[i][j]
@@ -161,7 +146,7 @@ def SolveModel():
           print('No solution found.')
   else:
       print('Specify an instance greater than 0.')
-  return assignment.ObjectiveValue()
+  return assignment.ObjectiveValue()/10000.0
 
 #
 # Read a problem instance from a file
