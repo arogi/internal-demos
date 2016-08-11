@@ -27,7 +27,6 @@ import cgi
 import json
 import GISOps
 import numpy as np
-import requests
 from scipy.spatial.distance import cdist
 from ortools.constraint_solver import pywrapcp
 from ortools.constraint_solver import routing_enums_pb2
@@ -100,7 +99,7 @@ def SolveModel():
           print('No solution found.')
   else:
       print('Specify an instance greater than 0.')
-  return assignment.ObjectiveValue()
+  return assignment.ObjectiveValue()/1000.0
 
 #
 # Read a problem instance from a file
