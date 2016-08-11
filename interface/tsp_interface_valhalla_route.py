@@ -82,7 +82,7 @@ def PreComputeDistances():
             text = postDataJSON(lati,longi,latj,longj)
             #print pyCurl(json.dumps(text))
             # Get the distance as a function of the network using Valhalla
-            d[i][j] = pyCurl(json.dumps(text))
+            d[i][j] = pyCurl(json.dumps(text))*10000
     #print d
 
 def pyCurl(input): #Define function to send request
@@ -148,7 +148,7 @@ def SolveModel():
           print('No solution found.')
   else:
       print('Specify an instance greater than 0.')
-  return assignment.ObjectiveValue()
+  return assignment.ObjectiveValue()/10000.0
 
 #
 # Read a problem instance from a file
