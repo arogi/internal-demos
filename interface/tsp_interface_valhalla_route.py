@@ -89,7 +89,7 @@ def pyCurl(input): #Define function to send request
     global r #define the request object as r
     global path_length
     #Put your valhalla url here
-    url = 'http://192.168.99.100:8002/route'
+    url = 'http://valhalla:8002/route'
     #Define your headers here: in this case we are using json data
     headers = {'content-type': 'application/json'}
     #define r as equal to the POST request
