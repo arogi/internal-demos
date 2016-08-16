@@ -1,0 +1,152 @@
+
+<!doctype html>
+<html>
+<!--
+test query
+valhalla.mapzen.com/route?json={"locations":[{"lat":42.358528,"lon":-83.271400,"street":"Appleton"},{"lat":42.996613,"lon":-78.749855,"street":"Ranch Trail"}],"costing":"auto","costing_options":{"auto":{"country_crossing_penalty":2000.0}},"directions_options":{"units":"miles"},"id":"my_work_route"}&api_key=valhalla-e0eBaR4
+-->
+
+<head>
+  <title>Polyline Decode Tester</title>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.0.0-beta.2/leaflet.css" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.0.0-beta.2/leaflet.js"></script>
+  <script src="https://mapzen.com/tangram/0.6/tangram.min.js"></script>
+
+  <style>
+  #map {
+    height:   500px;
+    width:    100%;
+    position: absolute;
+  }
+  </style>
+
+</head>
+
+<body>
+  <button id="mybutton" type="button" onclick="interfaceTest()">Run Test</button>
+  <p />
+  <div id="inputValue" style="height:50px;"></div><hr />
+  <div id="solution" style="height:50px;"></div><hr />
+  <div id="outputCoordinates" style="height:50px;"></div><hr />
+  <div id="map"></div>
+
+
+  <script>
+
+
+  var map = L.map('map');
+  var layer = Tangram.leafletLayer({
+    scene: 'https://raw.githubusercontent.com/arogi/grayprint-style/master/grayprint.yaml',
+    attribution: '<a href="http://github.com/arogi" target="_blank">Arogi</a> | <a href="http://www.openstreetmap.org/about" target="_blank">&copy; OSM contributors | <a href="https://mapzen.com/" target="_blank">Mapzen</a>',
+  });
+  layer.addTo(map);
+  map.setView([34.6, -119.5], 7)
+
+
+
+  inputJson = "{\"locations\":[{\"lat\":42.358528,\"lon\":-83.271400,\"street\":\"Appleton\"},{\"lat\":42.996613,\"lon\":-78.749855,\"street\":\"Ranch Trail\"}],\"costing\":\"auto\",\"costing_options\":{\"auto\":{\"country_crossing_penalty\":2000.0}},\"directions_options\":{\"units\":\"miles\"},\"id\":\"my_work_route\"}&api_key=valhalla-e0eBaR4";
+
+  document.getElementById('inputValue').innerHTML = "<b>Test input:</b> http://valhalla.mapzen.com/route?json=" + inputJson;
+
+  function interfaceTest(){
+    $.get(
+      "http://valhalla.mapzen.com/route",
+      {json : inputJson},
+      function(data) {
+
+        mySolutionString = JSON.stringify(data.trip.legs[0].shape);
+        document.getElementById('solution').innerHTML = "<b>Test output (first 500 char): </b>" + mySolutionString.substring(1,500);
+        str = data.trip.legs[0].shape;
+        // precision per the Mapzen Valhalla documentation (6); differs from Google polyline encoding (5)
+        precision = 6;
+
+
+        var index = 0,
+        lat = 0,
+        lng = 0,
+        coordinates = [],
+        shift = 0,
+        result = 0,
+        byte = null,
+        latitude_change,
+        longitude_change,
+        factor = Math.pow(10, precision || 6);
+
+        // Coordinates have variable length when encoded, so just keep
+        // track of whether we've hit the end of the string. In each
+        // loop iteration, a single coordinate is decoded.
+        while (index < str.length) {
+
+          // Reset shift, result, and byte
+          byte = null;
+          shift = 0;
+          result = 0;
+
+          do {
+            byte = str.charCodeAt(index++) - 63;
+            result |= (byte & 0x1f) << shift;
+            shift += 5;
+          } while (byte >= 0x20);
+
+          latitude_change = ((result & 1) ? ~(result >> 1) : (result >> 1));
+
+          shift = result = 0;
+
+          do {
+            byte = str.charCodeAt(index++) - 63;
+            result |= (byte & 0x1f) << shift;
+            shift += 5;
+          } while (byte >= 0x20);
+
+          longitude_change = ((result & 1) ? ~(result >> 1) : (result >> 1));
+
+          lat += latitude_change;
+          lng += longitude_change;
+
+          coordinates.push([lng / factor, lat / factor]);
+        }
+
+
+        var ourGeojson = {
+          "name":"NewFeatureType",
+          "type":"FeatureCollection",
+          "features":[{
+            "type":"Feature",
+            "geometry":{
+              "type":"LineString",
+              "coordinates": coordinates
+            },
+            "properties":null
+          }]
+        };
+
+        document.getElementById('outputCoordinates').innerHTML = "<b>GeoJSON (first 500 char): </b>" + JSON.stringify(ourGeojson).substring(1,500);
+        //  document.getElementById('outputCoordinates').innerHTML = "<b>Coordinates: </b>" + coordinates.toString();
+
+
+        // reset map view to center on beginning of solution
+        // map.setView(new L.LatLng(40.737, -73.923), 8);
+        map.panTo(new L.LatLng(coordinates[0][1], coordinates[0][0]));
+
+        // add GeoJSON to the map
+        L.geoJson(ourGeojson, {
+          style: function (feature) {
+            return {color: "yellow"};
+          },
+          onEachFeature: function (feature, layer) {
+            layer.bindPopup("hello");
+          }
+        }
+        ).addTo(map);
+
+
+      }
+    );
+  };
+
+  </script>
+
+</body>
+</html>
