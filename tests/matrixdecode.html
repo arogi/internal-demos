@@ -34,7 +34,7 @@
 
   var map = L.map('map');
   var layer = Tangram.leafletLayer({
-    scene: 'cinnabar-style.yaml',
+    scene: 'scene.yaml',
     attribution: '<a href="http://github.com/arogi" target="_blank">Arogi</a> | <a href="http://www.openstreetmap.org/about" target="_blank">&copy; OSM contributors | <a href="https://mapzen.com/" target="_blank">Mapzen</a>',
   });
   layer.addTo(map);
@@ -44,10 +44,21 @@
 
 
   markerz = {};
-  markerz[0] = L.marker([37.80119058305693, -122.45828568935393], {draggable:'true'}).addTo(map);
-  markerz[1] = L.marker([37.58031379389759, -122.4767205119133], {draggable:'true'}).addTo(map);
-  markerz[2] = L.marker([37.83185299258286, -122.28257417678833], {draggable:'true'}).addTo(map);
-  markerz[3] = L.marker([37.36760770611878, -121.92690253257751], {draggable:'true'}).addTo(map);
+  markerz[0] = L.marker([37.431472010773, -122.16891825199126], {draggable:'true'}).bindPopup("0").addTo(map);
+  markerz[1] = L.marker([37.48405331217069, -122.1506416797638], {draggable:'true'}).bindPopup("1").addTo(map);
+  markerz[2] = L.marker([37.483763850046266, -122.14746594429016], {draggable:'true'}).bindPopup("2").addTo(map);
+  markerz[3] = L.marker([37.483001878210196, -122.14883387088776], {draggable:'true'}).bindPopup("3").addTo(map);
+  markerz[4] = L.marker([37.48606674562217, -122.1457976102829], {draggable:'true'}).bindPopup("4").addTo(map);
+  markerz[5] = L.marker([37.42002084166404, -122.08320826292038], {draggable:'true'}).bindPopup("5").addTo(map);
+  markerz[6] = L.marker([37.4196033180332, -122.08434283733366], {draggable:'true'}).bindPopup("6").addTo(map);
+  markerz[7] = L.marker([37.42145659393423, -122.08233386278151], {draggable:'true'}).bindPopup("7").addTo(map);
+  markerz[8] = L.marker([37.42112641595339, -122.08269596099852], {draggable:'true'}).bindPopup("8").addTo(map);
+  markerz[9] = L.marker([37.33311729479175, -122.02824711799622], {draggable:'true'}).bindPopup("9").addTo(map);
+  markerz[10] = L.marker([37.33204241320586, -122.02832221984863], {draggable:'true'}).bindPopup("10").addTo(map);
+  markerz[11] = L.marker([37.330984578217, -122.0279198884964], {draggable:'true'}).bindPopup("11").addTo(map);
+  markerz[12] = L.marker([37.33058362073965, -122.02853679656982], {draggable:'true'}).bindPopup("12").addTo(map);
+  markerz[13] = L.marker([37.33011441246381, -122.0310366153717], {draggable:'true'}).bindPopup("13").addTo(map);
+  markerz[14] = L.marker([37.32959401440327, -122.0315945148468], {draggable:'true'}).bindPopup("14").addTo(map);
 
   // give each marker an ID that corresponds to their array address (e.g., markerz[1].id = 1)
   // note: objectLength is an external function (in routedecoder.js)
@@ -77,7 +88,7 @@
   // make the JSON stringy for the call to the API
   stringyInputJson = JSON.stringify(inputJson);
 
-  document.getElementById('inputValue').innerHTML = "<b>Test input:</b> http://matrix.mapzen.com/optimized_route?json=" + stringyInputJson;
+  document.getElementById('inputValue').innerHTML = "<b>Test input:</b> http://matrix.mapzen.com/optimized_route?json=" + stringyInputJson.substring(1,250);
 
 
   // enable the ability to drag around markers and track the new location
@@ -86,6 +97,8 @@
     markerz[newSimpleCount].on('dragend', function(e) {
       // since a marker moved, erase the previous path
       map.removeLayer(routePath);
+      map.removeLayer(routePath2);
+      map.removeLayer(routePath3);
 
       var myMarker = e.target;
       var myNewPosition = myMarker.getLatLng();
@@ -101,7 +114,7 @@
 
       // prepare json input for matrix api call
       stringyInputJson = JSON.stringify(inputJson);
-      document.getElementById('inputValue').innerHTML = "<b>Test input:</b> http://matrix.mapzen.com/optimized_route?json=" + stringyInputJson;
+      document.getElementById('inputValue').innerHTML = "<b>Test input:</b> http://matrix.mapzen.com/optimized_route?json=" + stringyInputJson.substring(1,250);
 
       // make the api request
       interfaceTest()
@@ -124,13 +137,33 @@
         // alert(numberOfSolutionLegs);
 
         // iterate through shapes/legs and store them as an array
+
+        // helper for enumerating the ordered solution
+        var startingCoordinates = {};
+        var solutionOrder = {};
+
         var legArray = {};
         var legCounter = 0;
         while (legCounter < numberOfSolutionLegs) {
           mySolutionString = data.trip.legs[legCounter].shape;
           legArray[legCounter] = mySolutionString;
-          legCounter = legCounter + 1;
+
+          // START helper for getting the ordered solution
+          startingCoordinates[legCounter] = [data.trip.locations[legCounter].lon, data.trip.locations[legCounter].lat];
+          jCounter = 0;
+          while (jCounter < numberOfSolutionLegs) {
+            if (startingCoordinates[legCounter][1].toFixed(4) == markerz[jCounter].getLatLng().lat.toFixed(4)) {
+              if (startingCoordinates[legCounter][0].toFixed(4) == markerz[jCounter].getLatLng().lng.toFixed(4)) {
+                solutionOrder[legCounter] = jCounter;
+              }
+            }
+            jCounter++;
+          }
+          // END helper for getting the ordered solution
+
+          legCounter++;
         }
+        solutionOrder[legCounter] = 0;
 
         // external function to decode them (return an array of coordinates)
         decodedLegs = legDecoder(numberOfSolutionLegs, legArray);
@@ -141,17 +174,40 @@
 
         // show solution as string
         document.getElementById('outputCoordinates').innerHTML = "<b>GeoJSON (first 250 char): </b>" + JSON.stringify(myGeoJSON).substring(1,250);
+        //document.getElementById('inputValue').innerHTML = "<b>Route Order: </b>" + JSON.stringify(solutionOrder);
+
+        listOfColors = ['#74a9cf','#3690c0','#0570b0','#034e7b'];
+
+        // black highlight line
+        routePath3 = L.geoJson(myGeoJSON, {
+          style: function (feature) {
+            return {color: 'black', weight:10, opacity:1};
+          }
+        }
+        ).addTo(map);
+
+        // white border highlight line
+        routePath2 = L.geoJson(myGeoJSON, {
+          style: function (feature) {
+            return {color: 'white', weight:9, opacity:1};
+          }
+        }
+        ).addTo(map);
+
 
         // add GeoJSON to the map
         routePath = L.geoJson(myGeoJSON, {
           style: function (feature) {
-            return {color: 'red', weight:6, opacity:1};
+            return {color: listOfColors[Math.floor(Math.random() * listOfColors.length)], weight:5, opacity:1};
           },
           onEachFeature: function (feature, layer) {
-            layer.bindPopup("hello");
+            layer.bindPopup("hello " + Math.random());
           }
         }
       ).addTo(map);
+
+
+
 
       map.fitBounds(routePath, {padding:[40,40]});
 
