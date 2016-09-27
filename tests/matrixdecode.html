@@ -44,10 +44,13 @@
 
 
   markerz = {};
-  markerz[0] = L.marker([37.80119058305693, -122.45828568935393], {draggable:'true'}).addTo(map);
-  markerz[1] = L.marker([37.58031379389759, -122.4767205119133], {draggable:'true'}).addTo(map);
-  markerz[2] = L.marker([37.83185299258286, -122.28257417678833], {draggable:'true'}).addTo(map);
-  markerz[3] = L.marker([37.36760770611878, -121.92690253257751], {draggable:'true'}).addTo(map);
+  markerz[0] = L.marker([37.80119058305693, -122.45828568935393], {draggable:'true'}).bindPopup("0").addTo(map);
+  markerz[1] = L.marker([37.58031379389759, -122.4767205119133], {draggable:'true'}).bindPopup("1").addTo(map);
+  markerz[2] = L.marker([37.83185299258286, -122.28257417678833], {draggable:'true'}).bindPopup("2").addTo(map);
+  markerz[3] = L.marker([37.36760770611878, -121.92690253257751], {draggable:'true'}).bindPopup("3").addTo(map);
+  markerz[4] = L.marker([37.36760770611878, -121.92690253257751], {draggable:'true'}).bindPopup("4").addTo(map);
+  markerz[5] = L.marker([37.36760770611878, -121.92690253257751], {draggable:'true'}).bindPopup("5").addTo(map);
+  markerz[6] = L.marker([37.36760770611878, -121.92690253257751], {draggable:'true'}).bindPopup("6").addTo(map);
 
   // give each marker an ID that corresponds to their array address (e.g., markerz[1].id = 1)
   // note: objectLength is an external function (in routedecoder.js)
@@ -124,13 +127,33 @@
         // alert(numberOfSolutionLegs);
 
         // iterate through shapes/legs and store them as an array
+
+        // helper for enumerating the ordered solution
+        var startingCoordinates = {};
+        var solutionOrder = {};
+
         var legArray = {};
         var legCounter = 0;
         while (legCounter < numberOfSolutionLegs) {
           mySolutionString = data.trip.legs[legCounter].shape;
           legArray[legCounter] = mySolutionString;
-          legCounter = legCounter + 1;
+
+          // START helper for getting the ordered solution
+          startingCoordinates[legCounter] = [data.trip.locations[legCounter].lon, data.trip.locations[legCounter].lat];
+          jCounter = 0;
+          while (jCounter < numberOfSolutionLegs) {
+            if (startingCoordinates[legCounter][1].toFixed(4) == markerz[jCounter].getLatLng().lat.toFixed(4)) {
+              if (startingCoordinates[legCounter][0].toFixed(4) == markerz[jCounter].getLatLng().lng.toFixed(4)) {
+                solutionOrder[legCounter] = jCounter;
+              }
+            }
+            jCounter++;
+          }
+          // END helper for getting the ordered solution
+
+          legCounter++;
         }
+        solutionOrder[legCounter] = 0;
 
         // external function to decode them (return an array of coordinates)
         decodedLegs = legDecoder(numberOfSolutionLegs, legArray);
@@ -141,6 +164,7 @@
 
         // show solution as string
         document.getElementById('outputCoordinates').innerHTML = "<b>GeoJSON (first 250 char): </b>" + JSON.stringify(myGeoJSON).substring(1,250);
+        //document.getElementById('inputValue').innerHTML = "<b>Route Order: </b>" + JSON.stringify(solutionOrder);
 
         // add GeoJSON to the map
         routePath = L.geoJson(myGeoJSON, {
@@ -151,7 +175,7 @@
             layer.bindPopup("hello");
           }
         }
-      ).addTo(map);
+        ).addTo(map);
 
       map.fitBounds(routePath, {padding:[40,40]});
 
