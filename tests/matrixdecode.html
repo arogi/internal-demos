@@ -42,7 +42,7 @@
 
 
 
-
+  // initial input data. manually defined for the demo
   markerz = {};
   markerz[0] = L.marker([37.431472010773, -122.16891825199126], {draggable:'true'}).bindPopup("0").addTo(map);
   markerz[1] = L.marker([37.48405331217069, -122.1506416797638], {draggable:'true'}).bindPopup("1").addTo(map);
@@ -68,7 +68,7 @@
     jjj++;
   }
 
-  // create the input JSON for the API call -- set of coordinates for the TSP
+  // create the input JSON for the API call -- the coordinates will be created by defining inputJson.location later.
   inputJson =
   {"locations":[],"costing":"auto","units":"mi"};
 
@@ -136,7 +136,9 @@
         numberOfSolutionLegs = data.trip.legs.length;
         // alert(numberOfSolutionLegs);
 
-        // iterate through shapes/legs and store them as an array
+        // this general section iterates through shapes/legs and store them as an array; e.g., the part that uses data.trips.legs
+        // there is a side story in the following code block, the valhalla api does not provide the ordered node solution
+        // so the there's a bit of extra code for that. it is currently not used, but the solution is: solutionOrder
 
         // helper for enumerating the ordered solution
         var startingCoordinates = {};
