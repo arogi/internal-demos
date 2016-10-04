@@ -1,5 +1,5 @@
 # network-tsp
-Experimental traveling salesman problem solver on a network (from your pals at Arogi).
+Experimental traveling salesman problem solver on a road network (from your pals at Arogi).
 
 Note to Contributors:  
 Older versions of build.sh would create a redundant network-tsp directory in your local repo. If you notice such a redundant directory, make sure you have the latest iterations of the code -- and, of course, do not push the redundant directory up to GitHub.  
