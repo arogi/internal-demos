@@ -15,7 +15,7 @@
  3. Open a web browser and enter the following into the address bar:  
      On OS X and Windows, enter `192.168.99.100`. On Linux, enter `localhost`  
 
-Want to use your own data? [Easy!](https://github.com/arogi/circuit-web/blob/master/README.md)  
+Want to use your own data? [Easy!](https://github.com/arogi/network-tsp/blob/master/docker-instructions.md)  
 
 Screenshot:  
 ![Screenshot](https://raw.githubusercontent.com/arogi/circuit-web/master/images/quickstart-screenshot.png)
