@@ -7,3 +7,4 @@ Older versions of build.sh would create a redundant network-tsp directory in you
 License:  
 This repo's Arogi Circuit Web demos are free & open source under the [Apache 2.0 License](LICENSE.md). The repo uses a smattering of other open source libraries too, and you will find credits to them in the code-- particular thanks to Google, Mapzen, and Leaflet.
 
+![Screenshot](https://raw.githubusercontent.com/arogi/network-tsp/development/tspscreen.png)
