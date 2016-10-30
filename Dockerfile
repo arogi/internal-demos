@@ -18,12 +18,12 @@ RUN apt-get install -y nano \
   git
 
 # Import arogi examples
-RUN ssh-keyscan github.com >> ~/.ssh/known_hosts
-RUN git clone --depth=1 --single-branch --branch=master https://github.com/arogi/internal-demos.git && \
-  cd internal-demos && \
-  cp -R * /var/www/html && \
-  cd .. && \
-  rm -R internal-demos/
+# # For now -- since this repo is private, install these manually after the image is built.
+# RUN git clone --depth=1 --single-branch --branch=master https://github.com/arogi/internal-demos.git && \
+#   cd internal-demos && \
+#   cp -R * /var/www/html && \
+#   cd .. && \
+#   rm -R internal-demos/
 
 # This section sets up Google OR-tools
 RUN wget https://github.com/google/or-tools/releases/download/v4.2/or-tools.python.examples_4.2.3758.tar.gz && \
