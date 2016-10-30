@@ -1,6 +1,6 @@
 #!/bin/bash
 
 docker build \
-  --tag arogi/network-tsp \
+  --tag arogi/internal-demos \
   --force-rm \
   .
