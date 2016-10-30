@@ -1,6 +1,6 @@
 # internal-demos  
 
-Repos for on-premises and private demos.  
+Repo for on-premises and private demos.  
 
 Experimental traveling salesman problem solver on a road network (from your pals at [Arogi](http://arogi.com)).
   
