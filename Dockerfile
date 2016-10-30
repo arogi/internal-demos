@@ -17,6 +17,14 @@ RUN apt-get install -y nano \
   python-scipy \
   git
 
+# Import arogi examples
+RUN ssh-keyscan github.com >> ~/.ssh/known_hosts
+RUN git clone --depth=1 --single-branch --branch=master https://github.com/arogi/internal-demos.git && \
+  cd internal-demos && \
+  cp -R * /var/www/html && \
+  cd .. && \
+  rm -R internal-demos/
+
 # This section sets up Google OR-tools
 RUN wget https://github.com/google/or-tools/releases/download/v4.2/or-tools.python.examples_4.2.3758.tar.gz && \
   tar -xzf or-tools.python.examples_4.2.3758.tar.gz && \
@@ -61,13 +69,6 @@ RUN a2dismod mpm_event && \
   sed -i '2 a\     Options +ExecCGI' /etc/apache2/sites-enabled/000-default.conf && \
   sed -i '3 a\  </Directory>' /etc/apache2/sites-enabled/000-default.conf && \
   sed -i '4 a\  AddHandler cgi-script .py' /etc/apache2/sites-enabled/000-default.conf
-
-# Import arogi examples
-RUN git clone --depth=1 --single-branch --branch=master https://github.com/arogi/internal-demos.git && \
-  cd internal-demos && \
-  cp -R * /var/www/html && \
-  cd .. && \
-  rm -R internal-demos/
 
 # Perform some cleanup
 RUN apt-get clean && \
