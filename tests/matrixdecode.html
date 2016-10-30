@@ -130,8 +130,8 @@
     var decodedLegs = {};
 
     $.get(
-      "http://matrix.mapzen.com/optimized_route",
-      {json : stringyInputJson, api_key : "matrix-Mzf7syY"},
+      "http://127.0.0.1:8002/optimized_route",
+      {json : stringyInputJson, api_key : "mapzen-tNHGCv2"},
       function(data) {
         numberOfSolutionLegs = data.trip.legs.length;
         // alert(numberOfSolutionLegs);
