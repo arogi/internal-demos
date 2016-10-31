@@ -3,30 +3,29 @@
 
 <head>
   <title>Routing Tester</title>
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.0.0-beta.2/leaflet.css" />
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.0.0-beta.2/leaflet.js"></script>
-  <script src="https://mapzen.com/tangram/0.6/tangram.min.js"></script>
+  <script src="jquery.min.js"></script>
+  <link rel="stylesheet" href="leaflet.css" />
+  <script src="leaflet.js"></script>
+  <script src="tangram.min.js"></script>
   <script src="routedecoder.js"></script>
 
   <style>
-  #map {
-    height:   500px;
+  body{
+    padding: 0;
+    margin: 0;
+  }
+  html, body, #map {
+    height:   100%;
     width:    100%;
     position: absolute;
   }
   </style>
 
+
 </head>
 
 <body>
-  <button id="mybutton" type="button" onclick="interfaceTest()">Run Test</button>
-  <p />
-  <div id="inputValue" style="height:50px;"></div><hr />
-  <div id="outputCoordinates" style="height:50px;"></div><hr />
   <div id="map"></div>
-
-
   <script>
 
   // the routePath is "global" so it can be called & manipulated eveywhere
@@ -45,20 +44,13 @@
   // initial input data. manually defined for the demo
   markerz = {};
   markerz[0] = L.marker([37.431472010773, -122.16891825199126], {draggable:'true'}).bindPopup("0").addTo(map);
-  markerz[1] = L.marker([37.48405331217069, -122.1506416797638], {draggable:'true'}).bindPopup("1").addTo(map);
-  markerz[2] = L.marker([37.483763850046266, -122.14746594429016], {draggable:'true'}).bindPopup("2").addTo(map);
-  markerz[3] = L.marker([37.483001878210196, -122.14883387088776], {draggable:'true'}).bindPopup("3").addTo(map);
-  markerz[4] = L.marker([37.48606674562217, -122.1457976102829], {draggable:'true'}).bindPopup("4").addTo(map);
-  markerz[5] = L.marker([37.42002084166404, -122.08320826292038], {draggable:'true'}).bindPopup("5").addTo(map);
-  markerz[6] = L.marker([37.4196033180332, -122.08434283733366], {draggable:'true'}).bindPopup("6").addTo(map);
-  markerz[7] = L.marker([37.42145659393423, -122.08233386278151], {draggable:'true'}).bindPopup("7").addTo(map);
-  markerz[8] = L.marker([37.42112641595339, -122.08269596099852], {draggable:'true'}).bindPopup("8").addTo(map);
-  markerz[9] = L.marker([37.33311729479175, -122.02824711799622], {draggable:'true'}).bindPopup("9").addTo(map);
-  markerz[10] = L.marker([37.33204241320586, -122.02832221984863], {draggable:'true'}).bindPopup("10").addTo(map);
-  markerz[11] = L.marker([37.330984578217, -122.0279198884964], {draggable:'true'}).bindPopup("11").addTo(map);
-  markerz[12] = L.marker([37.33058362073965, -122.02853679656982], {draggable:'true'}).bindPopup("12").addTo(map);
-  markerz[13] = L.marker([37.33011441246381, -122.0310366153717], {draggable:'true'}).bindPopup("13").addTo(map);
-  markerz[14] = L.marker([37.32959401440327, -122.0315945148468], {draggable:'true'}).bindPopup("14").addTo(map);
+  markerz[1] = L.marker([37.483763850046266, -122.14746594429016], {draggable:'true'}).bindPopup("1").addTo(map);
+  markerz[2] = L.marker([37.48606674562217, -122.1457976102829], {draggable:'true'}).bindPopup("2").addTo(map);
+  markerz[3] = L.marker([37.4196033180332, -122.08434283733366], {draggable:'true'}).bindPopup("3").addTo(map);
+  markerz[4] = L.marker([37.42112641595339, -122.08269596099852], {draggable:'true'}).bindPopup("4").addTo(map);
+  markerz[5] = L.marker([37.33204241320586, -122.02832221984863], {draggable:'true'}).bindPopup("5").addTo(map);
+  markerz[6] = L.marker([37.33058362073965, -122.02853679656982], {draggable:'true'}).bindPopup("6").addTo(map);
+  markerz[7] = L.marker([37.32959401440327, -122.0315945148468], {draggable:'true'}).bindPopup("7").addTo(map);
 
   // give each marker an ID that corresponds to their array address (e.g., markerz[1].id = 1)
   // note: objectLength is an external function (in routedecoder.js)
@@ -88,7 +80,7 @@
   // make the JSON stringy for the call to the API
   stringyInputJson = JSON.stringify(inputJson);
 
-  document.getElementById('inputValue').innerHTML = "<b>Test input:</b> http://matrix.mapzen.com/optimized_route?json=" + stringyInputJson.substring(1,250);
+  //document.getElementById('inputValue').innerHTML = "<b>Test input:</b> http://matrix.mapzen.com/optimized_route?json=" + stringyInputJson.substring(1,250);
 
 
   // enable the ability to drag around markers and track the new location
@@ -114,13 +106,15 @@
 
       // prepare json input for matrix api call
       stringyInputJson = JSON.stringify(inputJson);
-      document.getElementById('inputValue').innerHTML = "<b>Test input:</b> http://matrix.mapzen.com/optimized_route?json=" + stringyInputJson.substring(1,250);
+      //document.getElementById('inputValue').innerHTML = "<b>Test input:</b> http://matrix.mapzen.com/optimized_route?json=" + stringyInputJson.substring(1,250);
 
       // make the api request
       interfaceTest()
     });
     newSimpleCount++;
   };
+
+  interfaceTest();
 
 
 
@@ -131,7 +125,7 @@
 
     $.get(
       "http://127.0.0.1:8002/optimized_route",
-      {json : stringyInputJson, api_key : "mapzen-tNHGCv2"},
+      {json : stringyInputJson, api_key : "mapzen-AnrRp5x"},
       function(data) {
         numberOfSolutionLegs = data.trip.legs.length;
         // alert(numberOfSolutionLegs);
@@ -175,7 +169,7 @@
         //alert(JSON.stringify(myGeoJSON));
 
         // show solution as string
-        document.getElementById('outputCoordinates').innerHTML = "<b>GeoJSON (first 250 char): </b>" + JSON.stringify(myGeoJSON).substring(1,250);
+        //document.getElementById('outputCoordinates').innerHTML = "<b>GeoJSON (first 250 char): </b>" + JSON.stringify(myGeoJSON).substring(1,250);
         //document.getElementById('inputValue').innerHTML = "<b>Route Order: </b>" + JSON.stringify(solutionOrder);
 
         listOfColors = ['#74a9cf','#3690c0','#0570b0','#034e7b'];
@@ -218,6 +212,5 @@
   };
 
   </script>
-
 </body>
 </html>
