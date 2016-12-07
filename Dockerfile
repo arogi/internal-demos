@@ -15,7 +15,8 @@ RUN apt-get install -y nano \
   libapache2-mod-python \
   python-numpy \
   python-scipy \
-  git
+  git && \
+  pip install requests
 
 # Import arogi examples
 RUN git clone --depth=1 --single-branch --branch=master https://github.com/arogi/internal-demos.git && \
@@ -35,8 +36,6 @@ RUN wget https://github.com/google/or-tools/releases/download/v4.2/or-tools.pyth
   cd /usr/local/lib/python2.7/dist-packages && \
   chown -R root:www-data * && \
   chmod -R 755 *
-
-run pip install requests
 
 # This section sets up GDAL/OGR and PROJ
 RUN wget http://download.osgeo.org/gdal/2.1.1/gdal-2.1.1.tar.gz && \
