@@ -16,6 +16,7 @@ RUN apt-get install -y nano \
   python-numpy \
   python-scipy \
   git && \
+  pip install --upgrade pip && \
   pip install requests
 
 # Import arogi examples
@@ -24,9 +25,6 @@ RUN git clone --depth=1 --single-branch --branch=master https://github.com/arogi
   cp -R * /var/www/html && \
   cd .. && \
   rm -R internal-demos/
-
-
-#
 
 # This section sets up Google OR-tools
 RUN wget https://github.com/google/or-tools/releases/download/v5.0/or-tools_python_examples_v5.0.3919.tar.gz && \
