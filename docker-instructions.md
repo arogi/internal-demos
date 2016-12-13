@@ -5,7 +5,7 @@
 
  1. Install Docker. Their webpage has [instructions](https://docs.docker.com/engine/installation/).
 
- 2. In Windows and OS X, launch the Docker Quickstart Terminal. Linux uses the standard Terminal.
+ 2. In Windows and OS X, launch the Docker app. Linux uses the standard Terminal.
 
  3. Make a local copy of arogi-demos. Type:  
     `git clone https://github.com/arogi/circuit-web.git`
@@ -19,8 +19,7 @@
  2. Type: `docker run -it -p 80:80 -d -v ~/repos/circuit-web/:/var/www/html arogi/circuit-web`  
     In that statement, replace `~/repos/circuit-web/` with the pathname to your local repository.
 
- 3. Open a web browser and enter the following into the address bar:  
-     On OS X and Windows, enter `192.168.99.100`. On Linux, enter `localhost`  
+ 3. Open a web browser and enter the `localhost` into the address bar:  
 
 
 *Running TSP on a Road Network — (OS X and Windows only, will add Linux support soon)*  
