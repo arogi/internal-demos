@@ -30,9 +30,7 @@ import numpy as np
 from scipy.spatial.distance import cdist
 from ortools.constraint_solver import pywrapcp
 from ortools.constraint_solver import routing_enums_pb2
-import warnings
 
-warnings.filterwarnings("ignore")
 
 def main():
     objective = readJSONandSolve()
@@ -47,9 +45,7 @@ def RunTSP():
     #TSP using Google OR-Tools Constraint Programming model example
     PreComputeDistances() #compute the distances between points
     objective = SolveModel()
-
     return objective
-
 
 def PreComputeDistances():
     #declare a couple variables
@@ -67,7 +63,7 @@ def SolveModel():
   """Solve the problem and print the solution."""
   global route
   global routeCoord
-  warnings.filterwarnings("ignore")
+  depot = 0
 
   # Ensure that the data is valid for making at TSP route
   if numFeatures > 1:
@@ -75,7 +71,8 @@ def SolveModel():
       # Second argument = 1 to build a single tour (it's a TSP).
       # Nodes are indexed from 0 to parser_tsp_size - 1, by default the start of
       # the route is node 0.
-      routing = pywrapcp.RoutingModel(numFeatures, 1)
+      routing = pywrapcp.RoutingModel(numFeatures, 1, depot)
+      
       search_parameters = pywrapcp.RoutingModel.DefaultSearchParameters()
       # Setting first solution heuristic (cheapest addition).
       search_parameters.first_solution_strategy = (routing_enums_pb2.FirstSolutionStrategy.PATH_CHEAPEST_ARC)
@@ -101,38 +98,38 @@ def SolveModel():
           print('No solution found.')
   else:
       print('Specify an instance greater than 0.')
-  return assignment.ObjectiveValue()
+  return assignment.ObjectiveValue()/1000.0
 
 #
 # Read a problem instance from a file
 #
 def read_problem(file, readType):
-  global numFeatures
-  global js
+    global numFeatures
+    global js
 
-  try:
-      if readType == 1:
-          #print 'Reading JSON String Object'
-          js = json.loads(file)
-      elif readType == 2:
-          #print 'readFile({0})'.format(file)
-          with open(file,"r") as f:
-              js = json.load(f)
-  except IOError:
-      print 'Error reading file'
-      raise
+    try:
+        if readType == 1:
+            #print 'Reading JSON String Object'
+            js = json.loads(file)
+        elif readType == 2:
+            #print 'readFile({0})'.format(file)
+            with open(file,"r") as f:
+                js = json.load(f)
+    except IOError:
+        print 'Error reading file'
+        raise
 
-  # count the number of point features to connect
-  numFeatures = len(js['features'])
-  return 1
+    # count the number of point features to connect
+    numFeatures = len(js['features'])
+    return 1
 
 
 
 ### This function will return a geojson formatted string to send back to the web
-### In this case thisNode represents the 'from node' and nextNode represents the 'to node'
-### for the TSP.
+### Since it is based on the p-Median/MCLP data files we can use some of those
+### atributes to send back. In this case facilityLocated represents the 'from
+### node' and assignedTo represents the 'to node' for the TSP.
 def generateGEOJSON(objective):
-
     for i in range(numFeatures):
         node = routeCoord[i][0]
         nextNode = routeCoord[i][1]
@@ -142,13 +139,14 @@ def generateGEOJSON(objective):
     # if properties does not exist in the geojson, create it
     if 'properties' not in js:
         js['properties'] = {}
+
     # write the objective value into the geojson
     js['properties']['objective'] = objective
+
     ### As of this moment js is the output file... ready to be delivered back to
     ### as the solution
     return 1
-
-
+    
 ###########################################################
 ##################### The main controller code starts here.
 ###########################################################
