@@ -33,16 +33,12 @@ from ortools.constraint_solver import routing_enums_pb2
 
 
 def main():
-    objective = readJSONandSolve()
-    generateGEOJSON(objective)
-
-def readJSONandSolve():
-    read_problem(receivedMarkerData, 1)
     objective = RunTSP()
-    return objective
+    generateGEOJSON(objective)
 
 def RunTSP():
     #TSP using Google OR-Tools Constraint Programming model example
+    read_problem(receivedMarkerData, 1)
     PreComputeDistances() #compute the distances between points
     objective = SolveModel()
     return objective
