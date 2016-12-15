@@ -7,17 +7,16 @@
 
  2. In Windows and OS X, launch the Docker app. Linux uses the standard Terminal.
 
- 3. Make a local copy of arogi-demos. Type:  
-    `git clone https://github.com/arogi/circuit-web.git`
+ 3. Make a local copy of internal-demos. Type:  
+    `git clone https://github.com/arogi/internal-demos.git`
 
 
 *Getting Started*
 
- 1. Type: `docker pull arogi/circuit-web`  
-    to grab the latest Circuit-Web Docker image.
+ 1. From within the internal-demos folder, build the Docker image. Type: `./build.sh`  
+    *Note: this will take approx 15 minutes*  
 
- 2. Type: `docker run -it -p 80:80 -d -v ~/repos/circuit-web/:/var/www/html arogi/circuit-web`  
-    In that statement, replace `~/repos/circuit-web/` with the pathname to your local repository.
+ 2. Type: `docker run -p 80:80 arogi/internal-demos`  
 
  3. Open a web browser and enter the `localhost` into the address bar:  
 
