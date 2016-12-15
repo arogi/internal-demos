@@ -18,20 +18,7 @@
 
  2. Type: `docker run -d -p 80:80 arogi/internal-demos`  
 
- 3. Open a web browser and enter the `localhost` into the address bar:  
-
-
-*Running TSP on a Road Network — (OS X and Windows only, will add Linux support soon)*  
-
- 1. Type: `docker pull arogi/arogi-valhalla` to grab the latest Arogi-Valhalla Docker image.
-    *Note: This downloads statewide road networks for CA, NV, OR, and AZ. Thus it may take a while, depending on your network speed.*
-
- 2. Type: `docker run -it -d -p 8002:8002 arogi/arogi-valhalla`  
-
- 3. Type `docker ps -a` and check if circuit-web container is still running. If not, do "Getting Started" section above.  
-
- 4. Open a web browser and enter the following into the address bar:  
-     On OS X and Windows, enter `192.168.99.100/network.html`. On Linux, enter `localhost/network.html` 
+ 3. Open a web browser and enter the `localhost` into the address bar.
 
 
 *Shutting Down*  
@@ -43,4 +30,4 @@
 
  3. To remove the container, type: `docker rm container_name`
 
- 4. To remove the image, type: `docker rmi image_name` (e.g., `docker rmi arogi/circuit-web`)
+ 4. To remove the image, type: `docker rmi image_name` (e.g., `docker rmi arogi/internal-demos`)
