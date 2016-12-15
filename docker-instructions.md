@@ -14,7 +14,7 @@
 *Getting Started*
 
  1. From within the internal-demos folder, build the Docker image. Type: `./build.sh`  
-    *Note: this will take approx 15 minutes*  
+    *Note: this process may take over 15 minutes*  
 
  2. Type: `docker run -d -p 80:80 arogi/internal-demos`  
 
