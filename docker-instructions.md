@@ -16,7 +16,7 @@
  1. From within the internal-demos folder, build the Docker image. Type: `./build.sh`  
     *Note: this will take approx 15 minutes*  
 
- 2. Type: `docker run -it -p 80:80 arogi/internal-demos`  
+ 2. Type: `docker run -d -p 80:80 arogi/internal-demos`  
 
  3. Open a web browser and enter the `localhost` into the address bar:  
 
@@ -36,13 +36,11 @@
 
 *Shutting Down*  
 
- 1. Return to the terminal. To stop the container, press ctrl-c. To use the terminal without stopping the container, press ctrl-p then ctrl-q
-
- 2. Type: `docker ps -a`  
+ 1. In the terminal, type: `docker ps -a`  
     to see a list of all local docker containers. Note the name it gives as a label. It often is something like: `jolly_ptolemy`
 
- 3. To stop Docker, type: `docker stop container_name`
+ 2. To stop Docker, type: `docker stop container_name`
 
- 4. To remove the container, type: `docker rm container_name`
+ 3. To remove the container, type: `docker rm container_name`
 
- 5. To remove the image, type: `docker rmi image_name` (e.g., `docker rmi arogi/circuit-web`)
+ 4. To remove the image, type: `docker rmi image_name` (e.g., `docker rmi arogi/circuit-web`)
