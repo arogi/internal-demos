@@ -16,7 +16,7 @@
  1. From within the internal-demos folder, build the Docker image. Type: `./build.sh`  
     *Note: this will take approx 15 minutes*  
 
- 2. Type: `docker run -p 80:80 arogi/internal-demos`  
+ 2. Type: `docker run -it -p 80:80 arogi/internal-demos`  
 
  3. Open a web browser and enter the `localhost` into the address bar:  
 
@@ -36,7 +36,7 @@
 
 *Shutting Down*  
 
- 1. Return to the Docker terminal.
+ 1. Return to the terminal. To stop the container, press ctrl-c. To use the terminal without stopping the container, press ctrl-p then ctrl-q
 
  2. Type: `docker ps -a`  
     to see a list of all local docker containers. Note the name it gives as a label. It often is something like: `jolly_ptolemy`
