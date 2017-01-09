@@ -31,3 +31,8 @@
  3. To remove the container, type: `docker rm container_name`
 
  4. To remove the image, type: `docker rmi image_name` (e.g., `docker rmi arogi/internal-demos`)
+
+
+*Troubleshooting*
+
+ 1. If when running `docker run` you get an error that includes `Error starting userland proxy: Bind for 0.0.0.80: unexpected error`, then try running on a different port, e.g. `81:80`. Then in the browser, you will have to open the webpage `http://localhost:81/`
