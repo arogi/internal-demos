@@ -57,8 +57,8 @@ def Distance(i,j):
 
 def SolveModel():
     """Solve the problem and print the solution."""
-    global route
     global routeCoord
+    global depot
     depot = 0
 
     # Ensure that the data is valid for making at TSP route
@@ -129,6 +129,7 @@ def generateGEOJSON(objective):
         nextNode = routeCoord[i][1]
         js['features'][node]['properties']['thisNode'] = node
         js['features'][node]['properties']['nextNode'] = nextNode
+        js['features'][node]['properties']['depot'] = True if node == depot else False
 
     # if properties does not exist in the geojson, create it
     if 'properties' not in js:
